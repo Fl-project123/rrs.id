@@ -1,0 +1,14 @@
+@import "tailwindcss";
+
+@keyframes marquee {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-105%); }
+}
+
+.animate-marquee-smooth {
+  display: inline-block;
+  white-space: nowrap;
+  will-change: transform;
+  animation: marquee 20s linear infinite;
+}
+

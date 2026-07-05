@@ -1,0 +1,146 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Karier dan data profil kru kereta api (Masinis/PPKA)",
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string",
+          "description": "Nama dinas kru"
+        },
+        "rank": {
+          "type": "string",
+          "enum": ["Magang", "Muda", "Madya", "Utama"],
+          "description": "Pangkat karier Kru KA"
+        },
+        "points": {
+          "type": "number",
+          "description": "Koleksi poin performa dinas"
+        },
+        "hasLicense": {
+          "type": "boolean",
+          "description": "Status kepemilikan Surat Izin Mengemudi (Lisensi) Jalan Baja"
+        },
+        "stats": {
+          "type": "object",
+          "description": "Rangkuman statistik performa kru",
+          "properties": {
+            "tripsCompleted": { "type": "number" },
+            "speedInfractions": { "type": "number" },
+            "redSignalViolations": { "type": "number" },
+            "platformStopsCorrect": { "type": "number" },
+            "collisions": { "type": "number" }
+          }
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["username", "rank", "points", "hasLicense"]
+    },
+    "GameRoom": {
+      "title": "GameRoom",
+      "description": "Sesi game aktif multiplayer untuk koordinasi peran",
+      "type": "object",
+      "properties": {
+        "roomId": {
+          "type": "string"
+        },
+        "masinis": {
+          "type": "array",
+          "description": "Daftar pemain aktif peran Masinis"
+        },
+        "ppkas": {
+          "type": "object",
+          "description": "Daftar PPKA pengendali zona 1, 2, 3"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["WAITING", "LIVE", "ENDED"]
+        }
+      },
+      "required": ["roomId", "status"]
+    },
+    "Penalty": {
+      "title": "Penalty",
+      "description": "Arsip penalti & pembekuan lisensi kru karena kecelakaan jalur",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string"
+        },
+        "violationType": {
+          "type": "string"
+        },
+        "banned": {
+          "type": "boolean"
+        },
+        "bannedUntil": {
+          "type": "string"
+        },
+        "pointsDeducted": {
+          "type": "number"
+        }
+      },
+      "required": ["userId", "violationType", "banned"]
+    },
+    "MapZone": {
+      "title": "MapZone",
+      "description": "Informasi pembatasan kecepatan dan peta untuk PPKA Sektor",
+      "type": "object",
+      "properties": {
+        "zoneId": {
+          "type": "number"
+        },
+        "maxSpeedLimit": {
+          "type": "number"
+        },
+        "description": {
+          "type": "string"
+        }
+      },
+      "required": ["zoneId", "maxSpeedLimit"]
+    },
+    "AiSchedule": {
+      "title": "AiSchedule",
+      "description": "Rute rujukan dari kereta autopilot AI",
+      "type": "object",
+      "properties": {
+        "trainId": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "path": {
+          "type": "string"
+        }
+      },
+      "required": ["trainId", "name"]
+    }
+  },
+  "firestore": {
+    "users": {
+      "schema": "UserProfile",
+      "description": "Data profil kru KA & lisensi jalan baja"
+    },
+    "rooms": {
+      "schema": "GameRoom",
+      "description": "Manajemen sesi game aktif & penugasan PPKA Sektor"
+    },
+    "penalties": {
+      "schema": "Penalty",
+      "description": "Log pelanggaran lalu lintas sinyal & denda poin"
+    },
+    "map_zones": {
+      "schema": "MapZone",
+      "description": "Kecepatan rujukan & spesifikasi batas kecepatan dinas"
+    },
+    "ai_schedules": {
+      "schema": "AiSchedule",
+      "description": "Jadwal dines rangkaian AI autopilot"
+    }
+  }
+}

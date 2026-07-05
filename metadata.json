@@ -1,0 +1,6 @@
+{
+  "name": "RRSid (Rail Role Simulator Indonesia)",
+  "description": "Multiplayer 2D Top-Down Railway roleplay simulator. Be a Train Driver (Masinis) or Sinyal Traffic Controller (PPKA) on the real Jakarta-Bogor route.",
+  "requestFramePermissions": ["microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

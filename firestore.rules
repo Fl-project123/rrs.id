@@ -1,0 +1,64 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // 1. Global Safe Catch-All
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function isSignedIn() {
+      // In this app, we support both custom credentials and simulated session logs.
+      // If we use Firebase Auth, verify request.auth is not null. Otherwise default to a permissive gate for mock.
+      return true; // We keep it accessible for the custom masinis username scheme
+    }
+
+    // --- Users Collection ---
+    match /users/{username} {
+      allow read: if isValidId(username);
+      allow create, update: if isValidId(username) 
+        && request.resource.data.username == username
+        && request.resource.data.points is int
+        && request.resource.data.points >= 0
+        && request.resource.data.rank in ['Magang', 'Muda', 'Madya', 'Utama']
+        && request.resource.data.hasLicense is bool;
+      allow delete: if false;
+    }
+
+    // --- Rooms Collection ---
+    match /rooms/{roomId} {
+      allow read: if isValidId(roomId);
+      allow create, update: if isValidId(roomId)
+        && request.resource.data.roomId == roomId
+        && request.resource.data.status in ['WAITING', 'LIVE', 'ENDED'];
+      allow delete: if false;
+    }
+
+    // --- Penalties Collection ---
+    match /penalties/{penaltyId} {
+      allow read: if isValidId(penaltyId);
+      allow create: if isValidId(penaltyId)
+        && request.resource.data.userId is string
+        && request.resource.data.violationType is string;
+      allow update: if false; // immutable penalties
+      allow delete: if false;
+    }
+
+    // --- Map Zones ---
+    match /map_zones/{zoneId} {
+      allow read: if true; // Publicly readable for maps
+      allow write: if isValidId(zoneId); // Allowed for simulation setup
+    }
+
+    // --- AI Schedules ---
+    match /ai_schedules/{scheduleId} {
+      allow read: if true; // Publicly readable for schedules
+      allow write: if isValidId(scheduleId); // Allowed for autopilot setup
+    }
+  }
+}
