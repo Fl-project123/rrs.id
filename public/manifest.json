@@ -1,0 +1,16 @@
+{
+  "short_name": "RRSid",
+  "name": "RRSid - Rail Role Simulator Indonesia",
+  "icons": [
+    {
+      "src": "picture1.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#050811",
+  "theme_color": "#0b0e19",
+  "display": "standalone",
+  "orientation": "landscape"
+}
