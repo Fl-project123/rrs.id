@@ -2,12 +2,261 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My Google AI Studio App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>RRSid - Rail Role Simulator Indonesia</title>
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#0b0e19" />
+    
+    <meta name="screen-orientation" content="landscape">
+    <meta name="fullscreen" content="yes">
+
+    <style>
+      body, html {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background-color: #050811;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      }
+
+      /* Tombol Install PWA Modern Floating */
+      #pwa-install-container {
+        display: none; 
+        position: fixed;
+        bottom: 24px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 9999;
+        background: linear-gradient(135deg, #0b0e19 0%, #1e1b4b 100%);
+        padding: 12px 20px;
+        border-radius: 14px;
+        border: 1px solid #6366f1;
+        box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+        align-items: center;
+        gap: 16px;
+        color: #ffffff;
+      }
+      #pwa-install-container p {
+        margin: 0;
+        font-size: 13px;
+        font-weight: 500;
+        font-family: monospace;
+      }
+      #pwa-btn-install {
+        background: #ec4899;
+        color: #ffffff;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-weight: 800;
+        cursor: pointer;
+        font-size: 12px;
+        font-family: monospace;
+        transition: all 0.2s ease;
+        box-shadow: 0 0 10px rgba(236, 72, 153, 0.4);
+      }
+      #pwa-btn-install:hover {
+        background: #f472b6;
+        box-shadow: 0 0 15px #ec4899;
+        transform: scale(1.05);
+      }
+
+      /* Splash Screen Kustom RRSid */
+      #rrsid-splash-screen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #050811;
+        z-index: 9998;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .splash-logo {
+        max-width: 75%;
+        max-height: 60vh;
+        object-fit: contain;
+        filter: drop-shadow(0 0 25px rgba(99, 102, 241, 0.4));
+      }
+
+      .loading-container {
+        margin-top: 24px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+        width: 300px;
+      }
+
+      .loading-text {
+        color: #a5b4fc;
+        font-size: 12px;
+        font-weight: bold;
+        font-family: monospace;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        animation: pulse 1.5s infinite ease-in-out;
+      }
+
+      .progress-bar-bg {
+        width: 100%;
+        height: 6px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 10px;
+        overflow: hidden;
+        position: relative;
+        border: 1px solid rgba(99, 102, 241, 0.2);
+      }
+
+      .progress-bar-fill {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, #6366f1, #ec4899);
+        border-radius: 10px;
+        box-shadow: 0 0 12px #6366f1;
+        animation: loadProgress 3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      }
+
+      @keyframes pulse {
+        0%, 100% { opacity: 0.6; }
+        50% { opacity: 1; text-shadow: 0 0 10px rgba(165, 180, 252, 0.6); }
+      }
+
+      @keyframes loadProgress {
+        0% { width: 0%; }
+        15% { width: 20%; }
+        50% { width: 65%; }
+        85% { width: 90%; }
+        100% { width: 100%; }
+      }
+
+      /* Warning Peringatan jika device diputar ke Portrait */
+      #rotate-warning {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #050811;
+        z-index: 10000;
+        color: #ffffff;
+        text-align: center;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        padding: 20px;
+        box-sizing: border-box;
+        font-family: monospace;
+      }
+      #rotate-warning p {
+        font-size: 14px;
+        color: #ec4899;
+        font-weight: bold;
+        margin-top: 15px;
+        letter-spacing: 1px;
+      }
+    </style>
   </head>
   <body>
+
+    <div id="rotate-warning">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ec4899" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+      </svg>
+      <p>SISTEM DIWAKIBKAN LANDSCAPE<br>Silakan putar smartphone/layar Anda.</p>
+    </div>
+
+    <div id="rrsid-splash-screen">
+      <img src="/WhatsApp Image 2026-05-30 at 09.03.49.jpeg" alt="RRSid Neon Splash" class="splash-logo" />
+      <div class="loading-container">
+        <div class="loading-text">Menghubungkan Sinyal & Blok Lintas...</div>
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="pwa-install-container">
+      <p>Pasang Game RRSid di Beranda HP/Laptop?</p>
+      <button id="pwa-btn-install">PASANG</button>
+    </div>
+
     <div id="root"></div>
+
+    <script type="module">
+      let deferredPrompt;
+      const installContainer = document.getElementById('pwa-install-container');
+      const btnInstall = document.getElementById('pwa-btn-install');
+      const splashScreen = document.getElementById('rrsid-splash-screen');
+      const rotateWarning = document.getElementById('rotate-warning');
+
+      // Deteksi Orientasi HP
+      function checkOrientation() {
+        if (window.innerHeight > window.innerWidth) {
+          rotateWarning.style.display = 'flex';
+        } else {
+          rotateWarning.style.display = 'none';
+        }
+      }
+      window.addEventListener('resize', checkOrientation);
+      window.addEventListener('orientationchange', checkOrientation);
+      checkOrientation();
+
+      // Deteksi status jalannya PWA
+      const isRunningStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+      
+      if (isRunningStandalone) {
+        installContainer.style.display = 'none';
+        if (screen.orientation && screen.orientation.lock) {
+          screen.orientation.lock('landscape').catch(() => {});
+        }
+      } else {
+        // Jika dibuka di browser web biasa, hilangkan splash agar player langsung masuk lobby tanpa menunggu lama
+        splashScreen.style.display = 'none';
+      }
+
+      // Menangkap ajakan install browser
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        if (!isRunningStandalone) {
+          installContainer.style.display = 'flex';
+        }
+      });
+
+      btnInstall.addEventListener('click', async () => {
+        if (!deferredPrompt) return;
+        installContainer.style.display = 'none';
+        deferredPrompt.prompt();
+        await deferredPrompt.userChoice;
+        deferredPrompt = null;
+      });
+
+      window.addEventListener('appinstalled', () => {
+        installContainer.style.display = 'none';
+        deferredPrompt = null;
+      });
+
+      // Hilangkan splash screen setelah loading bar selesai (3 detik)
+      window.addEventListener('load', () => {
+        if (isRunningStandalone) {
+          setTimeout(() => {
+            splashScreen.style.opacity = '0';
+            setTimeout(() => {
+              splashScreen.style.display = 'none';
+            }, 500);
+          }, 3100);
+        }
+      });
+    </script>
+
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
-
